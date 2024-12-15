@@ -88,5 +88,5 @@ solution = (n + 1) // 2
 This happens because of this 
 if we started at specific leave we can make all the nodes on the path from u current leave to v the other because incase of tree there is always path from leave to another leave.
 
-![Solution](D_Begginer_s_Zelda.py)
+![Solution](../round_2/D_Begginer_s_Zelda.py)
 
