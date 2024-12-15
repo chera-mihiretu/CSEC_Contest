@@ -9,7 +9,7 @@ In this problem The Pieces can placed perfectely only when we have single column
 
 But in addition to that we can place pieces if they have two rows and two columns.
 
-![Solution](round_2/A_Puzzle_Pieces.py)
+![Solution](A_Puzzle_Pieces.py)
 
 ## Not Dividing
 - [Problem](https://codeforces.com/problemset/problem/1794/B)
@@ -26,7 +26,7 @@ we know that 2 % 1 == 0, then we increament 2 by one
 then a = [1, 3, 3] -> but notice 3 is still divisible by 1
 
 to avoid this case we starting making the first element different from 1.
-![Solution](round_2/B_Not_Dividing.py)
+![Solution](B_Not_Dividing.py)
 
 ## Settlement Of Guinea Pigs
 [Problem](https://codeforces.com/problemset/problem/1802/B)
@@ -71,7 +71,7 @@ avaries += k # number of guinea pigs bought after the doctor identified the guin
 
 Then we need to keep track of the maximum avaries on the way.
 
-![Solution](round_2/C_Settlement_of_Guinea_Pigs.py)
+![Solution](C_Settlement_of_Guinea_Pigs.py)
 
 
 
@@ -88,5 +88,5 @@ solution = (n + 1) // 2
 This happens because of this 
 if we started at specific leave we can make all the nodes on the path from u current leave to v the other because incase of tree there is always path from leave to another leave.
 
-![Solution](round_2/D_Begginer_s_Zelda.py)
+![Solution](D_Begginer_s_Zelda.py)
 
