@@ -1,104 +1,121 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-class SegmentTree{
-    public:
+typedef long long ll;
+class SegmentTree {
+public:
+
+    SegmentTree(int k, string str) : k(k), str(vector<char>(str.begin(), str.end())) {
+        int size = 4 * pow(2, k);
+        tree.resize(size, 0);
+        build(0, 0, pow(2, k) - 1);
+    }
+    void display() {
+        for (int i = 0; i < tree.size(); ++i) {
+            cout << tree[i] << " ";
+        }
+        cout << endl;
+    }
+    void change(int index, char command) {
+        str.at(index) = command;
+        vector<int> path;
+        while (index > 0) {
+            path.push_back(index);
+            index = (index - 1) / 2;
+        }
+        path.push_back(0);
+        query(0, path.size() - 1, path);
+    }
+
+    int getRootValue() {
+        return tree[0];
+    }
+
+private:
+    int k;
+    vector<char> str;
     vector<int> tree;
-    vector<char> s;
-        SegmentTree(int k, string s){
-            this->s.assign(s.begin(), s.end());
-            tree.assign(4*k, 0);
-            build(0, 0, k-1);
+
+    void build(ll node, int string_left, int string_right) {
+        if (string_left == string_right) {
+            tree[node] = 1;
+            return;
         }
-   
-        
-        void build(int node, int left, int right){
-            if (left == right){
-                this->tree[left] = 1;
-                return;
-            }
+        int string_mid = string_left + (string_right - string_left) / 2;
+        auto [left_child, right_child] = getChild(node);
+        build(left_child, string_left, string_mid);
+        build(right_child, string_mid + 1, string_right);
+        setValue(node);
+    }
 
-            int mid = left + (right - left) / 2;
-            pair<int, int> children = getChild(node);
+    pair<int, int> getChild(ll node) {
+        ll left = 2 * node + 1;
+        ll right = 2 * node + 2;
+        return pair<ll, ll>{left, right};
+    }
 
-            build(children.first, left, mid);
-            build(children.second, mid+1, right);
-
-            setTheValues(s[node], children);
-
+    void query(ll node, int index, vector<int> &path) {
+        if (index == 0) {
+            setValue(node);
+            return;
         }
-
-        pair<int, int> getChild(int node){
-            return make_pair(2*node, 2*node+1);
+        auto [left_child, right_child] = getChild(node);
+        if (path[index - 1] == left_child) {
+            query(left_child, index - 1, path);
+        } else {
+            query(right_child, index - 1, path);
         }
+        setValue(node);
+    }
 
-        void changeIt(vector<int> path, int index, int node){
-            pair<int, int> children = getChild(node);
-            if (index == 0){
-                setTheValues(s[node], children);
-                return;
-            }
-
-            if (children.first == path[index - 1]){
-                changeIt(path, index-1, children.first);
-            }else if (children.second == path[index - 1]){
-                changeIt(path, index-1, children.second);
-            }
-
-            setTheValues(s[node], children);
+    void setValue(ll node) {
+        auto [left, right] = getChild(node);
+        if (str[node] == '1') {
+            tree[node] = tree[left];
+        } else if (str[node] == '0') {
+            tree[node] = tree[right];
+        } else {
+            tree[node] = tree[left] + tree[right];
         }
-        void changePos(int index, char value){
-            s[index] = value;
-            vector<int> path;
-            while (index) {
-                path.push_back(index);
-                index = (index - 1) / 2;
-            }
-            path.push_back(0);
-            changeIt(path, path.size() - 1, 0);
-            
-        }
-
-
-        void setTheValues(char node, pair<int, int> children){
-            if (node == '0'){
-                this->tree[node] = this->tree[children.first];
-            }else if (node == '1'){
-                this->tree[node] = this->tree[children.second];
-            }else{
-                this->tree[node] = this->tree[children.first] + this->tree[children.second];
-            }
-        }
-        int getAnswer(){
-           
-            return this->tree[0];
-        }   
+    }
 };
 
-int main(){
-    int k, q, n;
-    string values;
+void mainFunction() {
+    int k;
     cin >> k;
-    cin >> values;
+    string str;
+    cin >> str;
+    reverse(str.begin(), str.end());
+    int q;
     cin >> q;
-    n = values.size();
-    SegmentTree* seg = new SegmentTree(k, values);
+    vector<pair<int, char>> queries(q);
+    for (int i = 0; i < q; ++i) {
+        cin >> queries[i].first >> queries[i].second;
+    }
+    
+    SegmentTree segmentTree(k, str);
+    
+    int length = pow(2, k);
     vector<int> answer;
-    while (q){
-        int position;
-        char value;
-        for (auto i : seg->tree){
-            cout << i << " ";
-        }
-        cin >> position >> value;
-        seg->changePos(n - position, value);
-        answer.push_back(seg->getAnswer());
-        
-        q--;
-    }
 
-    for (auto i : answer){
-        cout << i << endl;
+    for (auto &[x, command] : queries) {
+        segmentTree.change(length - x - 1, command);
+        answer.push_back(segmentTree.getRootValue());
+        // segmentTree.display();
     }
-
+    for (int ans : answer) {
+        cout << ans << endl;
+    }
 }
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    mainFunction();
+
+    return 0;
+}
+
+
+
