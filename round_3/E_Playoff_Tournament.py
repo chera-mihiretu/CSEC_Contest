@@ -1,63 +1,62 @@
+from sys import stdin,stdout
+# take input
+input = lambda: stdin.readline().strip()
+
 class SegmentTree:
-    def __init__(self, number):
-        self.size = number + 1
-        self.tree = [0] * (self.size * 4)
+    def __init__(self, size, string):
+        self.string = string
+        self.size = size
+        self.tree = [0] * (2 * self.size)
+        self.build()
+    def build(self):
+        for i in range(self.size):
+            self.tree[i + self.size] = 1
+            
+        for j in range(self.size - 1, -1, -1):
+            self.setValue(j)
+
+    def setValue(self, parent):
         
-    def change(self, number):
-        self.update(0, 0, self.size - 1, number)
-    def update(self, node, left, right, index):
-        if left == right:
-            self.tree[node] = 1
-            return 
-        mid = (right + left) // 2
-        # print(node, left, right, mid, index)
-        left_child, right_child = self.getChild(node)
-        if index <= mid:
-            self.update(left_child, left, mid, index)
+        if self.string[parent] == '0':
+            self.tree[parent] = self.tree[parent << 1 | 1]
+        elif self.string[parent] == '1':
+            self.tree[parent] = self.tree[parent << 1]
         else:
-            self.update(right_child, mid + 1, right, index)
-        self.tree[node] = self.tree[left_child] + self.tree[right_child]
-    def getMax(self, node, q_left, q_right, left, right):
-        if q_left > q_right:
-            return 0
-        mid = (left + right) // 2
-        left_child, right_child = self.getChild(node)
-        # print(q_left, left, q_right, right, self.tree[node])
-        if q_left == left and q_right == right:
-            return self.tree[node]
-        l = self.getMax(left_child, q_left, min(mid, q_right), left, mid)
-        r = self.getMax(right_child, max(q_left, mid + 1), q_right, mid + 1, right)
-        return l + r
-    def getChild(self, node):
-        return node * 2 + 1, node * 2 + 2 
-
-    def query(self, start):
-        # print('---------------------------------')
-        return self.getMax(0, 0, start - 1, 0, self.size)
-
-
-
-
-    
-class Solution:
-    def countSmaller(self, nums: List[int]) -> List[int]:
-        # setting offset
-        minimum = min(nums)
-        if minimum < 0:
-            for i in range(len(nums)):
-                nums[i] += abs(minimum) + 1
-        
-        # get answer
-        answer = [0] * len(nums)
-        seg = SegmentTree(max(nums))
-
-        for i in range(len(nums)-1, -1, -1):
+            self.tree[parent] = self.tree[parent << 1] + self.tree[parent << 1 | 1]
+    def update(self, index, command):
+        self.string[index] = command
+        while index >= 1:
+            self.setValue(index)
             
-            seg.change(nums[i])
-            answer[i] = seg.query(nums[i])
-            print(seg.tree)
-            break
-            
-        return answer
+            index >>= 1
+    def getAnswer(self):
+        return self.tree[1]
 
+
+
+# solution
+def solution():
+    k = int(input())
+    string =  input()
+    string = ['0'] + list(string)[::-1]
+    q = int(input())
+
+
+    answer = []
+    segented_tree = SegmentTree(pow(2, k), string)
+    for _ in range(q):
+        index, command = input().split()    
+        segented_tree.update(pow(2, k) - int(index), command)
+        # print(segented_tree.tree)
+        answer.append(segented_tree.getAnswer())
+    print(*answer, sep='\n')
+    # segmented tree
         
+
+
+
+# run the code
+if __name__ == '__main__':
+    test_case = 1 #int(input())
+    for i in range(test_case):
+        solution()
