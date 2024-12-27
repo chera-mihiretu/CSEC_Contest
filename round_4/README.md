@@ -43,3 +43,36 @@ In this problem, we know that if people arrive at 1000, they will miss trains fr
 Another case is if they arrive at 10000, they will miss trains from 1, 100,. We know that the time of arrival must be strictly greater than the train's take-off time. For that, we will check the existence of one before the last 1, which is at position 0.
 
 ![Solution](C_1_BowWow_and_the_Timetable.py)
+
+### 4. [Furtune Telling](https://codeforces.com/problemset/problem/1634/B)
+
+To solve this problem, there is one key observation: both addition and XOR operations have the same property regarding parity.
+
+If we add any number `x` to an odd value, it will change the parity of that number:
+- `x + odd = even` if `x` is odd
+- `x + odd = odd` if `x` is even
+
+This property is the same for the XOR operation:
+- `x XOR odd = even` if `x` is odd
+- `x XOR odd = odd` if `x` is even
+
+We are guaranteed that one of the starting points for Alice or Bob will be odd because `a = x` and `b = x + 3`. Based on this, we can check the parity of the outcome and the parity of the total components we have.
+![Solution](C_2_Fortune_Telling.cpp)
+
+### 5. [Military Problem](https://codeforces.com/problemset/problem/1006/E)
+
+To solve the problem efficiently, we need to precompute certain values instead of using a brute force approach every time. Additionally, we must calculate the child count for each node because if we start spreading the message from a specific node, we cannot go back to its parent. In such cases, knowing the number of children is crucial because if 'k' is greater than the number of children of the current node, the answer will be -1.
+
+Here are the steps we will follow:
+
+1. Precompute the order in which the message is spread.
+2. Precompute the child count for each node.
+3. Use a hash table to store the node value and its corresponding index from the precomputed order.
+
+For each query, we will:
+
+1. Find the index of the node from the hash table.
+2. Calculate the k-th index based on the found index. The k-th index will be the sum of the found index and k.
+3. If k is greater than the child count of the node, the answer will be -1. Otherwise, the value at the k-th index will be the solution for the current query.
+    
+![Solution](D_Military_Problem.cpp)
